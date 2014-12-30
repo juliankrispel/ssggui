@@ -1,7 +1,8 @@
 var Promise = require('bluebird');
 var path = require('path');
 
-var basePath = path.resolve('~/Documents/blog');
+var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+var basePath = path.join(home, 'Documents/blog');
 
 var config = {
     basePath: basePath,
@@ -13,7 +14,7 @@ var config = {
 };
 
 var getConfig = function(){
-    new Promise(function(fulfill, reject){
+    return new Promise(function(fulfill, reject){
         fulfill(config);
     });
 };
