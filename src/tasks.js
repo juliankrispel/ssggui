@@ -3,29 +3,39 @@ var template = require('gulp-template');
 var connect = require('gulp-connect');
 var _ = require('highland');
 var include = require('gulp-include');
+var config = require('./config');
+var path = require('path');
+
+// wrapping all build functions in the config promise, 
+// so that whenever they're called we ensure that config
+// is present
+var wrapConfig = function(func){
+    return function(){
+        config().then(func);
+    };
+};
 
 module.exports = {
 
-    server: function(){
+    server: wrapConfig(function(conf){
         connect.server({
-            root: 'dist',
-            port: 8383,
-            livereload: true
+            root: conf.publicPath,
+            port: conf.serverPort
         });
-    },
+    }),
 
-    build: function(){
-        var articles = gulp.src('articles/*.html')
+    build: wrapConfig(function(conf){
+        var articles = gulp.src(path.join(conf.articlePath, '*.html'))
             .pipe(_())
             .map(_.get('contents'))
             .invoke('toString');
 
-        var pages = gulp.src('pages/*.html')
+        var pages = gulp.src(path.join(conf.pagePath, '*.html'))
             .pipe(_())
             .map(_.get('contents'))
             .invoke('toString');
 
-        var theme = gulp.src('theme/*.html')
+        var theme = gulp.src(path.join(conf.themePath, '*.html'))
             .pipe(include())
             .pipe(_());
 
@@ -34,7 +44,6 @@ module.exports = {
         .parallel(10)
         .collect()
         .map(function(result){
-            console.log('boing');
             var articles = result[0];
             var pages = result[1];
             var theme = result[2];
@@ -53,17 +62,18 @@ module.exports = {
         .flatten()
         .pipe(template())
         .pipe(connect.reload())
-        .pipe(gulp.dest('dist'));
-    },
+        .pipe(gulp.dest(conf.publicPath));
+    }),
 
-    watch: function(){
-        gulp.watch(['pages/*.*', 'theme/*.*', 'articles/*.*'], this.build);
-    },
+    watch: wrapConfig(function(conf){
+        var paths = [conf.pagePath, articlePath, themePath];
+        gulp.watch(paths, this.build);
+    }),
 
     all: function(){
-        this.watch();
-        this.build();
-        this.server();
+        this.watch(conf);
+        this.build(conf);
+        this.server(conf);
     }
 };
 
