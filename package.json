@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "gulp": "^3.8.10",
+    "gulp-atom": "0.0.5",
     "gulp-connect": "^2.2.0",
     "gulp-include": "^1.1.0",
     "gulp-template": "^1.1.1",
