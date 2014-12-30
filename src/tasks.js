@@ -11,7 +11,7 @@ var path = require('path');
 // is present
 var wrapConfig = function(func){
     return function(){
-        config().then(func);
+        config().then(func.bind(module.exports));
     };
 };
 
@@ -66,14 +66,16 @@ module.exports = {
     }),
 
     watch: wrapConfig(function(conf){
-        var paths = [conf.pagePath, articlePath, themePath];
+        var paths = [conf.pagePath, conf.articlePath, conf.themePath].map(function(p){
+            return path.join(p, '**/*.*');
+        });
         gulp.watch(paths, this.build);
     }),
 
     all: function(){
-        this.watch(conf);
-        this.build(conf);
-        this.server(conf);
+        this.watch();
+        this.build();
+        this.server();
     }
 };
 
