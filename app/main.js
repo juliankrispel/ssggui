@@ -1,6 +1,13 @@
 var app = require('app');  // Module to control application life.
+var fs = require('fs');
+var ipc = require('ipc');
+var tasks = require('./server/tasks.js');
+var currentWriteStreamPath;
+var currentWriteStream;
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var documents = require('./server/documents');
+
+tasks.all();
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -30,6 +37,10 @@ app.on('ready', function() {
         });
     });
 
+    mainWindow.webContents.on('autosave', function(data){
+        console.log('autosave', data);
+    });
+
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
@@ -37,4 +48,14 @@ app.on('ready', function() {
         // when you should delete the corresponding element.
         mainWindow = null;
     });
+});
+
+ipc.on('autosave', function(_, data){
+    if(currentWriteStreamPath !== data.path){
+        if(currentWriteStream){
+            currentWriteStream.end();
+        }
+        currentWriteStream = fs.createWriteStream(data.path);
+    }
+    currentWriteStream.write(data.content);
 });
