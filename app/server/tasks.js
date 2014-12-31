@@ -18,6 +18,7 @@ var wrapConfig = function(func){
 module.exports = {
     server: wrapConfig(function(conf){
         connect.server({
+            livereload: true,
             root: conf.publicPath,
             port: conf.serverPort
         });
@@ -77,5 +78,3 @@ module.exports = {
         this.server();
     }
 };
-
-module.exports.all();
