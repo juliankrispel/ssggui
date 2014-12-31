@@ -16,9 +16,5 @@
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-atom": "0.0.5"
-  },
-  "dependencies": {
-    "front-matter": "^0.2.0",
-    "js-yaml": "^3.2.5"
   }
 }
