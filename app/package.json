@@ -11,6 +11,8 @@
     "gulp-connect": "^2.2.0",
     "gulp-include": "^1.1.0",
     "gulp-template": "^1.1.1",
-    "highland": "^2.2.0"
+    "highland": "^2.2.0",
+    "medium-editor": "^1.9.13",
+    "quill": "^0.19.8"
   }
 }
