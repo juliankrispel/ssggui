@@ -1,13 +1,13 @@
 var gulp = require('gulp');
-var gulpAtom = require('gulp-atom');
+var atomShell = require('gulp-atom-shell');
 
 gulp.task('atom', function() {
-    return gulpAtom({
-        srcPath: './src',
-        releasePath: './release',
-        cachePath: './cache',
-        version: 'v0.13.0',
-        rebuild: false,
-        platforms: ['win32-ia32', 'darwin-x64']
-    });
+    return gulp.src('app/**').pipe(atomshell({
+        version: '0.19.4',
+        outputPath: 'build',
+        productName: 'Github Writer',
+        productVersion: '0.0.1'
+    }));
 });
+
+gulp.task('default', ['atom']);

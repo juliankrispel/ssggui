@@ -1,0 +1,16 @@
+{
+  "name": "simple-static-site-app",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "author": "Julian Krispel-Samsel",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.5.2",
+    "gulp": "^3.8.10",
+    "gulp-connect": "^2.2.0",
+    "gulp-include": "^1.1.0",
+    "gulp-template": "^1.1.1",
+    "highland": "^2.2.0"
+  }
+}

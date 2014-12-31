@@ -16,7 +16,6 @@ var wrapConfig = function(func){
 };
 
 module.exports = {
-
     server: wrapConfig(function(conf){
         connect.server({
             root: conf.publicPath,
