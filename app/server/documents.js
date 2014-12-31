@@ -9,20 +9,19 @@ var parseDocuments = function(){
 };
 
 var parseDocumentFolder = function(folderPath){
-    return new Promise(function(fulfill, reject){
-        fs.readdirAsync(folderPath)
-            .map(function(file){
-                return path.join(folderPath, file);
-            })
-            .map(function(file){
-                return fs.readFileAsync(file, 'utf8');
-            })
-            .map(function(contents){
-                return new Promise(function(){
-                    fulfill(fm(contents));
-                });
-            });
-    });
+    return fs.readdirAsync(folderPath)
+        .map(function(file){
+            return path.join(folderPath, file);
+        })
+        .map(function(file){
+            return Promise.props({path: file, content: fs.readFileAsync(file, 'utf8')});
+        })
+        .map(function(file){
+            var parsed = fm(file.content);
+            parsed.basename = path.basename(file.path);
+            parsed.path = file.path;
+            return parsed;
+        });
 };
 
 module.exports = {
@@ -38,6 +37,7 @@ module.exports = {
     },
     all: function(){
         var documents = {};
+
         for(var key in this){
             if(key !== 'all'){
                 documents[key] = this[key]();
